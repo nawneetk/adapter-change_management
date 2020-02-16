@@ -1,6 +1,5 @@
 // Import built-in Node.js package path.
 const path = require('path');
-const request = require('request');
 
 /**
  * Import the ServiceNowConnector class from local Node.js module connector.js
@@ -84,27 +83,21 @@ class ServiceNowAdapter extends EventEmitter {
     this.healthcheck();
   }
 
-/**
- * @memberof ServiceNowAdapter
- * @method healthcheck
- * @summary Check ServiceNow Health
- * @description Verifies external system is available and healthy.
- *   Calls method emitOnline if external system is available.
- *
- * @param {ServiceNowAdapter~requestCallback} [callback] - The optional callback
- *   that handles the response.
- */
-healthcheck(callback) {
-
-  this.getRecord((result, error) => {
-     
-   if (error) {
-      this.emitOffline();
-   } else {
-      this.emitOnline();
-   }
- });
-}
+  /**
+   * @memberof ServiceNowAdapter
+   * @method healthcheck
+   * @summary Check ServiceNow Health
+   * @description Verifies external system is available and healthy.
+   *   Calls method emitOnline if external system is available.
+   *
+   * @param {ServiceNowAdapter~requestCallback} [callback] - The optional callback
+   *   that handles the response.
+   */
+  healthcheck(callback) {
+    // We will build this method in a later lab. For now, it will emulate
+    // a healthy integration by emmitting ONLINE.
+    this.emitOnline();
+  }
 
   /**
    * @memberof ServiceNowAdapter
@@ -153,19 +146,12 @@ healthcheck(callback) {
    *   handles the response.
    */
   getRecord(callback) {
-  let callbackData = null;
-  let callbackError = null;
-    
-    const requestOptions = {
-        method:'GET',
-        query:'sysparm_limit=1',
-        serviceNowTable: this.connector.serviceNowTable,
-        username:this.connector.admin,
-        password:this.connector.password,
-        url:this.connector.url,
-        json : true        
-    };
-   this.connector.sendRequest(requestOptions, (callbackData, callbackError) => callback(callbackData, callbackError));
+    this.connector.get((data, error) => {
+    if (error) {
+      console.error(`\nError returned from GET request:\n${JSON.stringify(error)}`);
+    }
+    console.log(`\nResponse returned from GET request:\n${JSON.stringify(data)}`)
+    });
   }
 
   /**
@@ -178,19 +164,14 @@ healthcheck(callback) {
    *   handles the response.
    */
   postRecord(callback) {
-       
-  const responseOptions = {
-        method:'POST',
-        serviceNowTable: this.connector.serviceNowTable,
-        username:this.connector.admin,
-        password:this.connector.password,
-        url:this.connector.url,
-        json : true       
-  };
-   
-  this.connector.sendRequest(responseOptions, (results, error) => callback(results, error));
-
+    this.connector.post((data, error) => {
+      if (error) {
+        console.error(`\nError returned from POST request:\n${JSON.stringify(error)}`);
+      }
+      console.log(`\nResponse returned from POST request:\n${JSON.stringify(data)}`)
+    });
   }
+
 }
 
 module.exports = ServiceNowAdapter;

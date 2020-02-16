@@ -97,7 +97,7 @@ function processRequestResults(error, response, body, callback) {
       callbackData = response;
     }
     return callback(callbackData, callbackError);
-  };
+  }
 
 
 /**

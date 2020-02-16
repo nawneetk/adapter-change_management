@@ -146,16 +146,12 @@ class ServiceNowAdapter extends EventEmitter {
    *   handles the response.
    */
   getRecord(callback) {
-    /**
-     * Write the body for this function.
-     * The function is a wrapper for this.connector's get() method.
-     * Note how the object was instantiated in the constructor().
-     * get() takes a callback function.
-     */
-    let getCallOptions = this.options;
-    getCallOptions.method = 'GET';
-    getCallOptions.query = 'sysparm_limit=1';
-    this.sendRequest(getCallOptions, (results, error) => callback(results, error));     
+    this.connector.get((data, error) => {
+    if (error) {
+      console.error(`\nError returned from GET request:\n${JSON.stringify(error)}`);
+    }
+    console.log(`\nResponse returned from GET request:\n${JSON.stringify(data)}`)
+    });
   }
 
   /**
@@ -168,16 +164,14 @@ class ServiceNowAdapter extends EventEmitter {
    *   handles the response.
    */
   postRecord(callback) {
-    /**
-     * Write the body for this function.
-     * The function is a wrapper for this.connector's post() method.
-     * Note how the object was instantiated in the constructor().
-     * post() takes a callback function.
-     */
-  let getCallOptions = this.options;
-  getCallOptions.method = 'POST';
-  this.sendRequest(getCallOptions, (results, error) => callback(results, error));     
+    this.connector.post((data, error) => {
+      if (error) {
+        console.error(`\nError returned from POST request:\n${JSON.stringify(error)}`);
+      }
+      console.log(`\nResponse returned from POST request:\n${JSON.stringify(data)}`)
+    });
   }
+
 }
 
 module.exports = ServiceNowAdapter;

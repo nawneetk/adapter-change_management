@@ -30,7 +30,6 @@ const validResponseRegex = /(2\d\d)/;
  *   message in optional second argument to callback function.
  */
 
-
 /**
  * @function constructUri
  * @description Build and return the proper URI by appending an optionally passed
@@ -84,14 +83,7 @@ function processRequestResults(error, response, body, callback) {
   // Initialize return arguments for callback
   let callbackData = null;
   let callbackError = null;
-  /**
-   * You must build the contents of this function.
-   * Study your package and note which parts of the get()
-   * and post() functions evaluate and respond to data
-   * and/or errors the request() function returns.
-   * This function must not check for a hibernating instance;
-   * it must call function isHibernating.
-   */
+  
     if (error) {
       console.error('Error present.');
       callbackError = error;
@@ -104,8 +96,8 @@ function processRequestResults(error, response, body, callback) {
     } else {
       callbackData = response;
     }
-    return callback(callbackData, callbackError);   
-}
+    return callback(callbackData, callbackError);
+  };
 
 
 /**
@@ -130,12 +122,7 @@ function sendRequest(callOptions, callback) {
     uri = constructUri(callOptions.serviceNowTable, callOptions.query);
   else
     uri = constructUri(callOptions.serviceNowTable);
-  /**
-   * You must build the requestOptions object.
-   * This is not a simple copy/paste of the requestOptions object
-   * from the previous lab. There should be no
-   * hardcoded values.
-   */
+
   const requestOptions = {
     method: callOptions.method,
     auth: {

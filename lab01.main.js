@@ -5,7 +5,6 @@ const options = {
   password: 'Itaas123@'
 };
 
-
 /**
  * Import the Node.js request package.
  * See https://www.npmjs.com/package/request

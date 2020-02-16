@@ -75,14 +75,7 @@ isHibernating(response) {
   // Initialize return arguments for callback
   let callbackData = null;
   let callbackError = null;
-  /**
-   * You must build the contents of this function.
-   * Study your package and note which parts of the get()
-   * and post() functions evaluate and respond to data
-   * and/or errors the request() function returns.
-   * This function must not check for a hibernating instance;
-   * it must call function isHibernating.
-   */
+  
     if (error) {
       console.error('Error present.');
       callbackError = error;
@@ -121,10 +114,8 @@ isHibernating(response) {
   else
     uri = this.constructUri(callOptions.serviceNowTable);
   /**
-   * You must build the requestOptions object.
-   * This is not a simple copy/paste of the requestOptions object
-   * from the previous lab. There should be no
-   * hardcoded values.
+   * The requestOptions object.
+   * 
    */
   const requestOptions = {
     method: callOptions.method,
@@ -156,10 +147,15 @@ isHibernating(response) {
    * @param {error} callback.error - The error property of callback.
    */
   get(callback) {
+    // Initialize return arguments for callback
+    let callbackData = null;
+    let callbackError = null;
+
     let getCallOptions = this.options;
     getCallOptions.method = 'GET';
     getCallOptions.query = 'sysparm_limit=1';
-    this.sendRequest(getCallOptions, (results, error) => callback(results, error));
+
+    this.sendRequest(getCallOptions, (callbackData, callbackError) => callback(callbackData, callbackError));    
   }
 
 /**
@@ -175,9 +171,13 @@ isHibernating(response) {
  * @param {error} callback.error - The error property of callback.
  */
 post(callback) {
+  // Initialize return arguments for callback
+  let callbackData = null;
+  let callbackError = null;
+
   let getCallOptions = this.options;
   getCallOptions.method = 'POST';
-  this.sendRequest(getCallOptions, (results, error) => callback(results, error));
+  this.sendRequest(getCallOptions, (callbackData, callbackError) => callback(callbackData, callbackError));
 }
 
 }

@@ -157,16 +157,15 @@ healthcheck(callback) {
      * Note how the object was instantiated in the constructor().
      * get() takes a callback function.
      */
-
     const requestOptions = {
-        method:'POST',
+        method:'GET',
         query:'',
         serviceNowTable:'change_request',
         username:'admin',
         password:'Itaas123@',
         url:'https://dev94763.service-now.com/'
     };
-     this.connector.sendRequest(requestOptions, (results, error) => callback(results, error));     
+     this.connector.sendRequest(requestOptions, (results, error) => callback(results, error));  
   }
 
   /**
@@ -180,7 +179,7 @@ healthcheck(callback) {
    */
    postRecord(callback) {
    const responseOptions = {
-        method:'GET',
+        method:'POST',
         query:'sysparm_limit=1',
         serviceNowTable:'change_request',
         username:'admin',
@@ -188,7 +187,7 @@ healthcheck(callback) {
         url:'https://dev94763.service-now.com/'
    };
 
-   this.connector.sendRequest(requestOptions, (results, error) => callback(results, error));     
+   this.connector.sendRequest(requestOptions, (results, error) => callback(results, error));
   }
 }
 

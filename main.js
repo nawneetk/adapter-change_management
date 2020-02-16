@@ -1,5 +1,6 @@
 // Import built-in Node.js package path.
 const path = require('path');
+const request = require('request');
 
 /**
  * Import the ServiceNowConnector class from local Node.js module connector.js
@@ -94,7 +95,8 @@ class ServiceNowAdapter extends EventEmitter {
  *   that handles the response.
  */
 healthcheck(callback) {
- this.getRecord((result, error) => {
+
+  this.getRecord((result, error) => {
      
    if (error) {
       this.emitOffline();
@@ -151,22 +153,19 @@ healthcheck(callback) {
    *   handles the response.
    */
   getRecord(callback) {
-    /**
-     * Write the body for this function.
-     * The function is a wrapper for this.connector's get() method.
-     * Note how the object was instantiated in the constructor().
-     * get() takes a callback function.
-     */
-
+  let callbackData = null;
+  let callbackError = null;
+    
     const requestOptions = {
-        method:'POST',
-        query:'',
-        serviceNowTable:'change_request',
-        username:'admin',
-        password:'Itaas123@',
-        url:'https://dev94763.service-now.com/'
+        method:'GET',
+        query:'sysparm_limit=1',
+        serviceNowTable: this.connector.serviceNowTable,
+        username:this.connector.admin,
+        password:this.connector.password,
+        url:this.connector.url,
+        json : true        
     };
-     this.connector.sendRequest(requestOptions, (results, error) => callback(results, error));     
+   this.connector.sendRequest(requestOptions, (callbackData, callbackError) => callback(callbackData, callbackError));
   }
 
   /**
@@ -178,18 +177,19 @@ healthcheck(callback) {
    * @param {ServiceNowAdapter~requestCallback} callback - The callback that
    *   handles the response.
    */
-   postRecord(callback) {
+  postRecord(callback) {
        
-   const responseOptions = {
-        method:'GET',
-        query:'sysparm_limit=1',
-        serviceNowTable:'change_request',
-        username:'admin',
-        password:'Itaas123@',
-        url:'https://dev94763.service-now.com/'
-   };
+  const responseOptions = {
+        method:'POST',
+        serviceNowTable: this.connector.serviceNowTable,
+        username:this.connector.admin,
+        password:this.connector.password,
+        url:this.connector.url,
+        json : true       
+  };
+   
+  this.connector.sendRequest(responseOptions, (results, error) => callback(results, error));
 
-   this.connector.sendRequest(requestOptions, (results, error) => callback(results, error));     
   }
 }
 

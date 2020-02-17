@@ -59,7 +59,6 @@ class ServiceNowAdapter extends EventEmitter {
     // Copy arguments' values to object properties.
     this.id = id;
     this.props = adapterProperties;
-    this.health = true;
     // Instantiate an object from the connector.js module and assign it to an object property.
     this.connector = new ServiceNowConnector({
       url: this.props.url,
@@ -178,10 +177,8 @@ class ServiceNowAdapter extends EventEmitter {
   
    if (error) {
       console.error('Error present.');
-      this.health = false;
       callbackError = error;
    } else {
-      this.health = true;
       var jsonObject = JSON.parse(data.body);
       var arr = [];
       arr.push ({"change_ticket_number" : jsonObject['result'][0].number});
@@ -203,10 +200,8 @@ class ServiceNowAdapter extends EventEmitter {
   
    if (error) {
       console.error('Error present.');
-      this.health = false;
       callbackError = error;
    } else {
-      this.health = true;
       var jsonObject = JSON.parse(data.body);
       var arr = [];
       arr.push ({"change_ticket_number" : jsonObject['result'][0].number});

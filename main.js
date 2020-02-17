@@ -59,6 +59,7 @@ class ServiceNowAdapter extends EventEmitter {
     // Copy arguments' values to object properties.
     this.id = id;
     this.props = adapterProperties;
+    this.health = true;
     // Instantiate an object from the connector.js module and assign it to an object property.
     this.connector = new ServiceNowConnector({
       url: this.props.url,
@@ -93,15 +94,16 @@ class ServiceNowAdapter extends EventEmitter {
     * @param {ServiceNowAdapter~requestCallback} [callback] - The optional callback
     *   that handles the response.
     */
-    healthcheck(callback) {
-        this.getRecord((result, error) => {
+    healthcheck() {
+      this.connector.get((data, error) => {
         if (error) {
-            this.emitOffline();
+            this.emitOffline();          
         } else {
             this.emitOnline();
         }
-        });
+      });        
     }
+
   /**
    * @memberof ServiceNowAdapter
    * @method emitOffline
@@ -148,14 +150,11 @@ class ServiceNowAdapter extends EventEmitter {
    * @param {ServiceNowAdapter~requestCallback} callback - The callback that
    *   handles the response.
    */
-  getRecord(callback) {
-    this.connector.get((data, error) => {
-    if (error) {
-      console.error(`\nError returned from GET request:\n${JSON.stringify(error)}`);
-    }
-    console.log(`\nResponse returned from GET request:\n${JSON.stringify(data)}`)
-    });
-  }
+   getRecord(callback) {
+     this.connector.get((data, error) => {
+       this.processResults(data, error, (data, error) => callback(data, error));
+     });
+   }
 
   /**
    * @memberof ServiceNowAdapter
@@ -166,15 +165,29 @@ class ServiceNowAdapter extends EventEmitter {
    * @param {ServiceNowAdapter~requestCallback} callback - The callback that
    *   handles the response.
    */
-  postRecord(callback) {
-    this.connector.post((data, error) => {
-      if (error) {
-        console.error(`\nError returned from POST request:\n${JSON.stringify(error)}`);
-      }
-      console.log(`\nResponse returned from POST request:\n${JSON.stringify(data)}`)
-    });
-  }
+   postRecord(callback) {
+     this.connector.get((data, error) => {
+       this.processResults(data, error, (data, error) => callback(data, error));
+     });
+   }
 
+   processResults(data, error,callback) {
+   // Initialize return arguments for callback
+   let callbackData = null;
+   let callbackError = null;
+  
+   if (error) {
+      console.error('Error present.');
+      this.health = false;
+      callbackError = error;
+   } else {
+      this.health = true;
+      var ArrObj = JSON.parse(data.body);
+      console.log ('\n\n\n'+ ArrObj);
+      callbackData = ArrObj; //JSON.parse(data.responseData.JSON);
+   }
+    return callback(callbackData, callbackError);
+   }
 }
 
 module.exports = ServiceNowAdapter;

@@ -141,11 +141,11 @@ class ServiceNowConnector {
     },
     baseUrl: this.options.url,
     uri: uri,
-  };
+ };
   
-  request(requestOptions, (error, response, body) => {
+ request(requestOptions, (error, response, body) => {
     this.processRequestResults(error, response, body, (processedResults, processedError) => callback(processedResults, processedError));
-  });
+ });
 }
 
 /**
@@ -166,7 +166,7 @@ class ServiceNowConnector {
     let getCallOptions = this.options;
     getCallOptions.method = 'GET';
     getCallOptions.query = 'sysparm_limit=1';
-    this.sendRequest(getCallOptions, (results, error) => callback(results, error));
+    this.sendRequest(getCallOptions, (results, error) => {callback(results, error)});
   };   
     
 /**

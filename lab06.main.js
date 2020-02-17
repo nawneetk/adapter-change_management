@@ -83,27 +83,25 @@ class ServiceNowAdapter extends EventEmitter {
     this.healthcheck();
   }
 
-/**
- * @memberof ServiceNowAdapter
- * @method healthcheck
- * @summary Check ServiceNow Health
- * @description Verifies external system is available and healthy.
- *   Calls method emitOnline if external system is available.
- *
- * @param {ServiceNowAdapter~requestCallback} [callback] - The optional callback
- *   that handles the response.
- */
-healthcheck(callback) {
- this.getRecord((result, error) => {
-     
-   if (error) {
-      this.emitOffline();
-   } else {
-      this.emitOnline();
-   }
- });
-}
-
+    /**
+    * @memberof ServiceNowAdapter
+    * @method healthcheck
+    * @summary Check ServiceNow Health
+    * @description Verifies external system is available and healthy.
+    *   Calls method emitOnline if external system is available.
+    *
+    * @param {ServiceNowAdapter~requestCallback} [callback] - The optional callback
+    *   that handles the response.
+    */
+    healthcheck(callback) {
+        this.getRecord((result, error) => {
+        if (error) {
+            this.emitOffline();
+        } else {
+            this.emitOnline();
+        }
+        });
+    }
   /**
    * @memberof ServiceNowAdapter
    * @method emitOffline
@@ -113,7 +111,7 @@ healthcheck(callback) {
    */
   emitOffline() {
     this.emitStatus('OFFLINE');
-    log.warn('ServiceNow: Instance is unavailable.');
+    log.warn('ServiceNow:' + this.id + 'Instance is unavailable.');
   }
 
   /**
@@ -151,21 +149,12 @@ healthcheck(callback) {
    *   handles the response.
    */
   getRecord(callback) {
-    /**
-     * Write the body for this function.
-     * The function is a wrapper for this.connector's get() method.
-     * Note how the object was instantiated in the constructor().
-     * get() takes a callback function.
-     */
-    const requestOptions = {
-        method:'GET',
-        query:'',
-        serviceNowTable:'change_request',
-        username:'admin',
-        password:'Itaas123@',
-        url:'https://dev94763.service-now.com/'
-    };
-     this.connector.sendRequest(requestOptions, (results, error) => callback(results, error));  
+    this.connector.get((data, error) => {
+    if (error) {
+      console.error(`\nError returned from GET request:\n${JSON.stringify(error)}`);
+    }
+    console.log(`\nResponse returned from GET request:\n${JSON.stringify(data)}`)
+    });
   }
 
   /**
@@ -177,18 +166,15 @@ healthcheck(callback) {
    * @param {ServiceNowAdapter~requestCallback} callback - The callback that
    *   handles the response.
    */
-   postRecord(callback) {
-   const responseOptions = {
-        method:'POST',
-        query:'sysparm_limit=1',
-        serviceNowTable:'change_request',
-        username:'admin',
-        password:'Itaas123@',
-        url:'https://dev94763.service-now.com/'
-   };
-
-   this.connector.sendRequest(requestOptions, (results, error) => callback(results, error));
+  postRecord(callback) {
+    this.connector.post((data, error) => {
+      if (error) {
+        console.error(`\nError returned from POST request:\n${JSON.stringify(error)}`);
+      }
+      console.log(`\nResponse returned from POST request:\n${JSON.stringify(data)}`)
+    });
   }
+
 }
 
 module.exports = ServiceNowAdapter;

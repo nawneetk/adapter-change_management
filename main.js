@@ -152,7 +152,7 @@ class ServiceNowAdapter extends EventEmitter {
    */
    getRecord(callback) {
      this.connector.get((data, error) => {
-       this.processResults(data, error, (data, error) => callback(data, error));
+       this.processGetResults(data, error, (data, error) => callback(data, error));
      });
    }
 
@@ -167,11 +167,11 @@ class ServiceNowAdapter extends EventEmitter {
    */
    postRecord(callback) {
      this.connector.get((data, error) => {
-       this.processResults(data, error, (data, error) => callback(data, error));
+       this.processPostResults(data, error, (data, error) => callback(data, error));
      });
    }
 
-   processResults(data, error,callback) {
+   processGetResults(data, error,callback) {
    // Initialize return arguments for callback
    let callbackData = null;
    let callbackError = null;
@@ -182,9 +182,42 @@ class ServiceNowAdapter extends EventEmitter {
       callbackError = error;
    } else {
       this.health = true;
-      var ArrObj = JSON.parse(data.body);
-      console.log ('\n\n\n'+ ArrObj);
-      callbackData = ArrObj; //JSON.parse(data.responseData.JSON);
+      var jsonObject = JSON.parse(data.body);
+      var arr = [];
+      arr.push ({"change_ticket_number" : jsonObject['result'][0].number});
+      arr.push ({"active" : jsonObject['result'][0].active});
+      arr.push ({"priority" : jsonObject['result'][0].priority});
+      arr.push ({"description" : jsonObject['result'][0].description});
+      arr.push ({"work_start" : jsonObject['result'][0].work_start});
+      arr.push ({"work_end" : jsonObject['result'][0].work_end});
+      arr.push ({"change_ticket_key" : jsonObject['result'][0].sys_id});      
+      callbackData = arr; //JSON.parse(data.responseData.JSON);
+   }
+    return callback(callbackData, callbackError);
+   }
+
+    processPostResults(data, error,callback) {
+   // Initialize return arguments for callback
+   let callbackData = null;
+   let callbackError = null;
+  
+   if (error) {
+      console.error('Error present.');
+      this.health = false;
+      callbackError = error;
+   } else {
+      this.health = true;
+      var jsonObject = JSON.parse(data.body);
+      var arr = [];
+      arr.push ({"change_ticket_number" : jsonObject['result'][0].number});
+      arr.push ({"active" : jsonObject['result'][0].active});
+      arr.push ({"priority" : jsonObject['result'][0].priority});
+      arr.push ({"description" : jsonObject['result'][0].description});
+      arr.push ({"work_start" : jsonObject['result'][0].work_start});
+      arr.push ({"work_end" : jsonObject['result'][0].work_end});
+      arr.push ({"change_ticket_key" : jsonObject['result'][0].sys_id});
+      
+      callbackData = Object.assign({}, arr); //JSON.parse(data.responseData.JSON);
    }
     return callback(callbackData, callbackError);
    }
